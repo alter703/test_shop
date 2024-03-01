@@ -4,10 +4,11 @@
 {% block content %}
 <div class="container">
 
-    <h1>Hello, world!</h1>
-    <p>Ти на головній сторінці сайту.</p>
-    <a href="{% url 'main:lol' %}" class="btn btn-primary">lol</a>
-    
+    <h1>Ласкаво просимо до Lightning Shop!</h1>
+    <p><i>Ти на головній сторінці сайту.</i></p>
+    <h2>Тут поки порожньо, але цей блог(чи магазин, хз) буде поповнюватись новими речами!</h2>
+
+    <a href="{% url 'main:about' %}" class="btn btn-primary">About us</a>
+    <a href="{% url 'main:lol' %}" class="btn btn-primary", title="DON'T CLICK ON THIS">Lol</a>
 </div>
 {% endblock %}
-  

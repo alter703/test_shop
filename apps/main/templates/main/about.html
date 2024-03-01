@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+
+    <div class="row d-flex justify-content-center">
+        <div class="col-6">    
+            <h1><b>Ти на сторінці "Про нас"!</b></h1>
+            <h3>Магазин Lightning Shop має великий асортимент техніки, а саме:</h3>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Відеокарти</li>
+                <li class="list-group-item">Монітори</li>
+                <li class="list-group-item">Системні блоки</li>
+                <li class="list-group-item">Ноутбуки</li>
+                <li class="list-group-item">Та багато іншого!</li>
+            </ul><br>
+            <a href="{% url 'main:index' %}" class="btn btn-primary", style="background-color: brown;">Go to main page</a>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
