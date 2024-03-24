@@ -89,6 +89,7 @@ def like_view(request, post_id):
 @login_required
 def dislike_view(request, post_id):
     if request.method == 'GET':
+        user_like = None
         post = get_object_or_404(Post, pk=post_id)
         # print(post.dislike.all())
         if request.user in post.dislike.all():
@@ -97,4 +98,7 @@ def dislike_view(request, post_id):
         else:
             post.dislike.add(request.user)
             user_dislike = True
-        return JsonResponse( {'dislike_count': post.dislike.count(), 'user_dislike': user_dislike} )
+            if request.user in post.like.all():
+                post.like.remove(request.user)
+                user_like = False
+        return JsonResponse( {'dislike_count': post.dislike.count(), 'user_dislike': user_dislike, 'user_like': user_like, 'like_count': post.like.count()} )

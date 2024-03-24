@@ -95,6 +95,10 @@
             .then((data) => {
                 if (data.user_dislike) {
                     document.getElementById(`dislike_${id}`).innerHTML = `<i class="fa fa-thumbs-down text-yellow-500"></i> ${data.dislike_count}`;
+                    if (!data.user_like) {
+                        document.getElementById(`like_${id}`).innerHTML = `<i class="fa fa-heart text-white"></i> ${data.like_count}`;
+
+                    }
                 } else {
                     document.getElementById(`dislike_${id}`).innerHTML = `<i class="fa fa-thumbs-down text-white"></i> ${data.dislike_count}`;
                 }
