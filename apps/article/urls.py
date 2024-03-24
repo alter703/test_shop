@@ -12,4 +12,6 @@ urlpatterns = [
     path('delete/<int:post_id>/', views.delete_view, name='delete'),    #google.com/blog/delete/1/
     path('update/<int:post_id>/', views.update_view, name='update'),    #google.com/blog/update/1/
     path('like/<int:post_id>', views.like_view, name='like'),    #google.com/blog/like/1/
+    path('dislike/<int:post_id>', views.dislike_view, name='dislike'),    #google.com/blog/dislike/1/
+
 ]
