@@ -4,6 +4,8 @@ from django.contrib.auth.decorators import login_required
 from .models import Post
 from .forms import PostForm
 
+from django.http import JsonResponse
+
 from django.contrib import messages
 
 from django.core.paginator import Paginator
@@ -68,3 +70,16 @@ def update_view(request, post_id):
             messages.error(request, 'Error updating post')
         return redirect('article:detail', post_id=post.id)
     return redirect('article:index')
+
+
+@login_required
+def like_view(request, post_id):
+    if request.method == 'GET':
+        post = get_object_or_404(Post, pk=post_id)
+        if request.user in post.like.all():
+            post.like.remove(request.user)
+            user_like = False
+        else:
+            post.like.add(request.user)
+            user_like = True
+        return JsonResponse( {'like_count': post.like.count(), 'user_like': user_like} )
