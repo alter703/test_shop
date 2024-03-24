@@ -75,6 +75,7 @@ def update_view(request, post_id):
 @login_required
 def like_view(request, post_id):
     if request.method == 'GET':
+        user_dislike = None
         post = get_object_or_404(Post, pk=post_id)
         # print(post.like.all())
         if request.user in post.like.all():
@@ -83,7 +84,10 @@ def like_view(request, post_id):
         else:
             post.like.add(request.user)
             user_like = True
-        return JsonResponse( {'like_count': post.like.count(), 'user_like': user_like} )
+            if request.user in post.dislike.all():
+                post.dislike.remove(request.user)
+                user_dislike = False
+        return JsonResponse( {'like_count': post.like.count(), 'user_like': user_like, 'user_dislike': user_dislike, 'dislike_count': post.dislike.count()} )
     
 
 @login_required
