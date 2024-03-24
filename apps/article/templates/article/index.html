@@ -4,16 +4,29 @@
 {% block content %}
 <div class="my-4 rounded-lg bg-base-300 p-9 ">
     <h1 class="text-3xl font-bold mb-4">Blog</h1>
-    <h1 class="text-2xl font-semibold mb-3">Кількість: {{ amount_posts }}</h1>
     <a onclick="my_modal_4.showModal()" class="btn btn-primary bg-gradient-to-r from-cyan-500 to-blue-500">Create
         Post</a>
     <div class="my-4 border-b-2 border-gray-300 w-full"></div>
     <div class="grid grid-cols-3 gap-7">
         {% for post in all_posts %}
 
-        {% include 'article/_include_blocks/_card_post.html' %}
+        {% include 'article/_include_blocks/_card_post.html' with post=post %}
 
         {% endfor %}
+    </div>
+    <div class="join align-center justify-center flex my-4">
+        {% if all_posts.has_previous %}
+        <a href="?page=1" class="join-item btn">«</a>
+        <a href="?page={{ all_posts.previous_page_number }}" class="join-item btn">Previous Page</a>
+        {% endif %}
+
+        <button class="join-item btn btn-primary">Page {{ all_posts.number }}</button>
+
+        {% if all_posts.has_next %}
+        <a href="?page={{ all_posts.next_page_number }}" class="join-item btn">Next Page</a>
+        <a href="?page={{ all_posts.paginator.num_pages }}" class="join-item btn">»</a>
+
+        {% endif %}
     </div>
 </div>
 
@@ -52,4 +65,4 @@
 </dialog>
 
 
-{% endblock %}
+<!-- {% endblock %} -->
