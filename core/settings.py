@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     'apps.main',
-    'apps.article',    
+    'apps.article',
+    'apps.members',   
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+LOGIN_REDIRECT_URL = 'main:index'
+LOGOUT_REDIRECT_URL = 'main:index'
+LOGIN_URL = 'members:login'
