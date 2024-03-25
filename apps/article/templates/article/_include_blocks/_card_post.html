@@ -12,10 +12,15 @@
             <h2 class="card-title">{{ post.title }}</h2>
     </a>
     <div class="card-actions justify-end">
-        <button class="btn btn-dark text-white text-lg" id="dislike_{{post.id}}" onclick="dislike({{post.id}})"><i
-                class="fa-regular fa-thumbs-down {%if user in post.like.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
+
+        <button
+            class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
+            id="dislike_{{post.id}}" onclick="dislike({{post.id}})"><i
+                class="fa-solid fa-thumbs-down {%if user in post.like.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
             {{ post.dislike.count }}</button>
-        <button class="btn btn-dark text-white text-lg" id="like_{{post.id}}" onclick="like({{post.id}})"><i
+        <button
+            class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
+            id="like_{{post.id}}" onclick="like({{post.id}})"><i
                 class="fa-solid fa-heart {%if user in post.like.all %}text-red-500{%else%}text-white{%endif%}"></i>
             {{ post.like.count }}</button>
     </div>
