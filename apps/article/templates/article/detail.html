@@ -10,7 +10,7 @@
     
     {% endif %}" alt="Shoes" class="w-full max-h-96 object-cover mb-4 rounded-md" />
 
-<h1 class="text-3xl font-bold mb-4">{{ post.title }}</h1>
+<h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
 
 {% if post.author == user %}
 <div class="my-4 border-b-2 border-gray-200 p-4">
@@ -21,6 +21,9 @@
 
 <p class="text-gray-500 mb-4">Автор: {{ post.author }}</p>
 <p class="text-gray-500 mb-4">Дата: {{ post.created_at.date }}</p>
+<p class="text-gray-500 mb-4">Сподобалось: {{ post.like.count }}</p>
+<p class="text-gray-500 mb-4">Не сподобалось: {{ post.dislike.count }}</p>
+
 <p class="mb-4">{{ post.content }}</p>
 
 
