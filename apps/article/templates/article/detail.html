@@ -47,16 +47,20 @@
         <p class="text-gray-500 mb-4">Author: {{ comment.author }}</p>
         <p class="text-gray-500 mb-4">Published: {{ comment.created_at|timesince }} ago</p>
         <p>{{ comment.content }}</p>
-        <button
-            class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
-            id="dislike_{{comment.id}}" onclick="dislike({{comment.id}})"><i
-                class="fa-solid fa-thumbs-down {%if user in comment.dislike.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
-            {{ comment.dislike.count }}</button>
-        <button
-            class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
-            id="like_{{comment.id}}" onclick="like({{comment.id}})"><i
-                class="fa-solid fa-heart {%if user in comment.like.all %}text-red-500{%else%}text-white{%endif%}"></i>
-            {{ comment.like.count }}</button>
+        <div class="container">
+            <button
+                class="btn {% if comment.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
+                id="dislike_{{comment.id}}" onclick="dislike({{comment.id}})">
+                <i
+                    class="fa-solid fa-thumbs-down {%if user in comment.dislike.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
+                {{ comment.dislike.count }}</button>
+            <button
+                class="btn {% if comment.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
+                id="like_{{comment.id}}" onclick="like({{comment.id}})"><i
+                    class="fa-solid fa-heart {%if user in comment.like.all %}text-red-500{%else%}text-white{%endif%}"></i>
+                {{ comment.like.count }}</button>
+        </div>
+
     </div>
     {% endfor %}
 </div>
@@ -119,13 +123,17 @@
 
 <script>
     function like(id) {
-        fetch(`./like_comment/${id}`, {
+        fetch(`like_comment/${id}`, {
             method: 'GET',
         })
             .then((res) => res.json())
             .then((data) => {
                 if (data.user_like) {
                     document.getElementById(`like_${id}`).innerHTML = `<i class="fa fa-heart text-red-500"></i> ${data.like_count}`;
+                    if (!data.user_dislike) {
+                        document.getElementById(`dislike_${id}`).innerHTML = `<i class="fa fa-thumbs-down text-white"></i> ${data.dislike_count}`;
+
+                    }
                 } else {
                     document.getElementById(`like_${id}`).innerHTML = `<i class="fa fa-heart text-white"></i> ${data.like_count}`;
                 }
@@ -138,7 +146,7 @@
     }
 
     function dislike(id) {
-        fetch(`./dislike_comment/${id}`, {
+        fetch(`dislike_comment/${id}`, {
             method: 'GET',
         })
             .then((res) => res.json())

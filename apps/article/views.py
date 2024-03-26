@@ -15,6 +15,11 @@ def index(request):
     all_posts = Post.objects.all()
     amount_posts = Post.objects.count()
 
+    # for post in all_posts: # перебирання всіх постів
+    #     for s in post.comments.all(): # перебирання коментарів кожного поста 
+    #         if s.author_id == request.user.id: # і перевірка на ідентичність id юзера та автора коментарів 
+    #             print(1111)
+
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
     all_posts_page = paginator.get_page(page)
@@ -30,7 +35,6 @@ def index(request):
 
 def detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    amount_comments = ''
 
     post = Post.objects.get(pk=post_id)
     update_form = PostForm(instance=post)
