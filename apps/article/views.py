@@ -12,7 +12,6 @@ from django.core.paginator import Paginator
 
 # Create your views here.
 def index(request):
-
     all_posts = Post.objects.all()
     amount_posts = Post.objects.count()
 
@@ -40,16 +39,18 @@ def detail(request, post_id):
     }
     return render(request, 'article/detail.html', context)
 
+
 def create_view(request):
-    
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            messages.success(request, 'Post was created successfully')
             return redirect('article:detail' , post_id=post.id)
-        
+
+
 @login_required
 def delete_view(request, post_id):
     if request.method == 'POST':
@@ -57,6 +58,7 @@ def delete_view(request, post_id):
         post.delete()
         messages.success(request, 'Post deleted successfully')
     return redirect('article:index')
+
 
 @login_required
 def update_view(request, post_id):
@@ -88,7 +90,7 @@ def like_view(request, post_id):
                 post.dislike.remove(request.user)
                 user_dislike = False
         return JsonResponse( {'like_count': post.like.count(), 'user_like': user_like, 'user_dislike': user_dislike, 'dislike_count': post.dislike.count()} )
-    
+
 
 @login_required
 def dislike_view(request, post_id):
