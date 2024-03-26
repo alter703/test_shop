@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
-from .models import Post
-from .forms import PostForm
+from .models import Post, Comment
+from .forms import PostForm, CommentForm
 
 from django.http import JsonResponse
 
@@ -30,12 +30,13 @@ def index(request):
 
 def detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-    
+    amount_comments = ''
+
     post = Post.objects.get(pk=post_id)
     update_form = PostForm(instance=post)
     context = {
         'post': post,
-        'update_form': update_form
+        'update_form': update_form,
     }
     return render(request, 'article/detail.html', context)
 
@@ -108,3 +109,55 @@ def dislike_view(request, post_id):
                 post.like.remove(request.user)
                 user_like = False
         return JsonResponse( {'dislike_count': post.dislike.count(), 'user_dislike': user_dislike, 'user_like': user_like, 'like_count': post.like.count()} )
+
+
+@login_required
+def like_comment_view(request, comment_id):
+    if request.method == 'GET':
+        user_dislike = None
+        comment = get_object_or_404(Comment, pk=comment_id)
+        if request.user in comment.like.all():
+            comment.like.remove(request.user)
+            user_like = False
+        else:
+            comment.like.add(request.user)
+            user_like = True
+            if request.user in comment.dislike.all():
+                comment.dislike.remove(request.user)
+                user_dislike = False
+        return JsonResponse( {'like_count': comment.like.count(), 'user_like': user_like, 'user_dislike': user_dislike, 'dislike_count': comment.dislike.count()} )
+
+
+@login_required
+def dislike_comment_view(request, comment_id):
+    if request.method == 'GET':
+        user_like = None
+        comment = get_object_or_404(Comment, pk=comment_id)
+        if request.user in comment.dislike.all():
+            comment.dislike.remove(request.user)
+            user_dislike = False
+        else:
+            comment.dislike.add(request.user)
+            user_dislike = True
+            if request.user in comment.like.all():
+                comment.like.remove(request.user)
+                user_like = False
+        return JsonResponse( {'dislike_count': comment.dislike.count(), 'user_dislike': user_dislike, 'user_like': user_like, 'like_count': comment.like.count()} )
+
+
+@login_required
+def comment_view(request, post_id):
+    if request.method == 'POST':
+        post = get_object_or_404(Post, pk=post_id)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = Comment.objects.create(
+                post=post,
+                author=request.user,
+                content=form.cleaned_data['content']
+            )
+            comment.save()
+            messages.success(request, 'Comment created successfully')
+        else:
+            messages.error(request, 'Error creating comment')
+    return redirect('article:detail', post_id=post_id)

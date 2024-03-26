@@ -14,4 +14,7 @@ urlpatterns = [
     path('like/<int:post_id>', views.like_view, name='like'),    #google.com/blog/like/1/
     path('dislike/<int:post_id>', views.dislike_view, name='dislike'),    #google.com/blog/dislike/1/
 
+    path('post/<int:post_id>/comment/', views.comment_view, name='comment'),    #google.com/blog/1/comment/
+    path('like_comment/<int:comment_id>', views.like_comment_view, name='like_comment'),    #google.com/blog/like_comment/
+    path('dislike_comment/<int:comment_id>', views.dislike_comment_view, name='dislike_comment'),    #google.com/blog/like_comment/
 ]
