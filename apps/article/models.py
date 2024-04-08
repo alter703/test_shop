@@ -21,6 +21,10 @@ class Post(models.Model):
         ordering = ['-created_at']
 
 
+    def __str__(self) -> str:
+        return self.title
+
+
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')  # поле post відносится до Post моделі(related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')  # поле author відносится до User моделі(related_name='comments')
