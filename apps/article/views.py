@@ -13,7 +13,16 @@ from django.db.models import Count
 
 # Create your views here.
 def index(request):
-    all_posts = Post.objects.all().prefetch_related("author", "like", "dislike", "comments")
+    # select_related використовується, коли потрібно отримати дані з однієї таблиці та її зв'язаних таблиць,
+    # які мають зовнішні ключі (ForeignKey). Це допомагає зменшити кількість запитів до бази даних,
+    # але воно працює лише з одним рівнем вкладеності.
+
+    # prefetch_related використовується, коли потрібно отримати дані з багатьох зв'язаних таблиць,
+    # які можуть бути пов'язані через ForeignKey або ManyToManyField (кращеManyToManyField). Це ефективно завантажує
+    # дані з кількох зв'язаних таблиць за один запит, дозволяючи уникнути додаткових запитів
+    # до бази даних при доступі до даних.
+
+    all_posts = Post.objects.all().select_related('author').prefetch_related("like", "dislike", "comments")
     amount_posts = Post.objects.aggregate(count_posts=Count('pk'))
 
     paginator = Paginator(all_posts, 3)
@@ -31,7 +40,7 @@ def index(request):
 
 def detail(request, post_id):
     # post = get_object_or_404(Post, pk=post_id)
-    post = Post.objects.prefetch_related('comments', 'author', 'comments__author', 'comments__like', 'comments__dislike').get(pk=post_id)
+    post = Post.objects.select_related('author').prefetch_related('comments', 'comments__author', 'comments__like', 'comments__dislike').get(pk=post_id)
 
     update_form = PostForm(instance=post)
     context = {
