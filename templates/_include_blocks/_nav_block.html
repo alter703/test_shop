@@ -10,11 +10,12 @@
             <ul class="menu menu-horizontal px-1">
                 <li><a href="{% url 'main:lol' %}">lol</a></li>
                 <li><a href="{% url 'article:index' %}">Blog</a></li>
+                {% if user.is_superuser %}
+                <li><a href="/admin">Admin</a></li>
+                {% endif %}
             </ul>
         </div>
         <div class="navbar-end flex">
-
-
             {% if user.is_authenticated %}
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
