@@ -23,7 +23,7 @@ class Post(models.Model):
                                processors=[ResizeToFill(300, 300)],
                                format='WEBP', 
                                options={'quality': 60})
-                  
+
     like = models.ManyToManyField(User, related_name='like_posts', blank=True)
     dislike = models.ManyToManyField(User, related_name='dislike_posts', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
