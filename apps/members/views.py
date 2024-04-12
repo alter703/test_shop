@@ -7,6 +7,8 @@ from django.contrib import messages
 from apps.article.models import Post
 from apps.article.forms import PostForm
 
+from django.core.paginator import Paginator
+
 # Create your views here.
 def login_view(request):
     form = AuthenticationForm()
@@ -44,10 +46,15 @@ def signup_view(request):
 
 @login_required
 def profile_view(request):
-    posts = Post.objects.filter(author=request.user)
-    created_form = PostForm()
-    context = { 
-        'posts': posts,
-        'created_form': created_form,
+    all_posts = Post.objects.filter(author=request.user).prefetch_related("author").prefetch_related("like").prefetch_related("dislike")
+
+    paginator = Paginator(all_posts, 3)
+    page = request.GET.get('page')
+    all_posts_page = paginator.get_page(page)
+
+    context = {
+        'all_posts': all_posts_page,
+        'created_form': PostForm(),
     }
+
     return render(request, 'members/profile.html', context)

@@ -38,10 +38,6 @@
         <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
-        {% if user.is_authenticated %}
-        <a onclick="my_modal_4.showModal()" class="btn btn-primary bg-gradient-to-r from-cyan-500 to-blue-500">Create
-            Post</a>
-        {% endif %}
         <form action="{% url 'article:create' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="grid grid-cols-1 gap-6">

@@ -9,11 +9,12 @@
         </figure>
 
         <div class="card-body">
-            <h2 class="card-title">{{ post.title }}</h2>
+            <h2 class="card-title">{{ post.title }}{% if forloop.first %}
+                <div class="badge badge-neutral">The newest!</div>{% endif %}
+            </h2>
             <h4>Коментарів: {{ post.comments.count }}</h4>
     </a>
     <div class="card-actions justify-end">
-
         <button
             class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
             id="dislike_{{post.id}}" onclick="dislike({{post.id}})"><i

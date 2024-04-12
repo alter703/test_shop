@@ -12,7 +12,7 @@ from django.core.paginator import Paginator
 
 # Create your views here.
 def index(request):
-    all_posts = Post.objects.all()
+    all_posts = Post.objects.prefetch_related("author").prefetch_related("like").prefetch_related("dislike")
 
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
@@ -28,8 +28,9 @@ def index(request):
 
 def detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
+    
+    post = Post.objects.prefetch_related('comments__author').prefetch_related('comments__like').prefetch_related('comments__dislike').get(pk=post_id)
 
-    post = Post.objects.get(pk=post_id)
     update_form = PostForm(instance=post)
     context = {
         'post': post,
