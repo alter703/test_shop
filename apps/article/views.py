@@ -40,7 +40,7 @@ def index(request):
 
 def detail(request, post_id):
     # post = get_object_or_404(Post, pk=post_id)
-    post = Post.objects.select_related('author').prefetch_related('comments', 'comments__author', 'comments__like', 'comments__dislike').get(pk=post_id)
+    post = Post.objects.all().select_related('author').prefetch_related('comments', 'comments__author', 'comments__like', 'comments__dislike').get(pk=post_id)
 
     update_form = PostForm(instance=post)
     context = {
