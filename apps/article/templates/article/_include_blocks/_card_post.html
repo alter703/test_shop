@@ -5,11 +5,12 @@
             https://upload.wikimedia.org/wikipedia/ru/thumb/6/61/Rickrolling.gif/200px-Rickrolling.gif
             {% else %}
             {{ post.image.url }}            
-            {% endif %}" alt="Post Photo" class="w-full rounded-lg" />
+            {% endif %}" alt="Post Photo" class="w-full rounded-md" />
         </figure>
 
         <div class="card-body">
             <h2 class="card-title">{{ post.title }}</h2>
+            <h2>Автор: {{ post.author }}</h2>
             <h4>Коментарів: {{ post.comments.count }}</h4>
     </a>
     <div class="card-actions justify-end">
