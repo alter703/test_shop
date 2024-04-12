@@ -1,19 +1,20 @@
-<div class="card w-100 bg-base-200 shadow-xl hover:bg-base-100 transition-all duration-300 hover:shadow-2xl">
+<div
+    class="card card-compact w-95 bg-base-200 shadow-xl hover:bg-base-100 transition-all duration-300 hover:shadow-2xl">
     <a href="{% url 'article:detail' post.id %}">
         <figure>
-            <img src="{% if not post.image %} 
-            https://upload.wikimedia.org/wikipedia/ru/thumb/6/61/Rickrolling.gif/200px-Rickrolling.gif
+            <img src="{% if not post.thumbnail %} 
+            https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019
             {% else %}
-            {{ post.image.url }}            
-            {% endif %} " alt="Shoes" class="w-full rounded-lg" />
+            {{ post.thumbnail.url }}            
+            {% endif %}" alt="Post Photo" class="w-full rounded-md" />
         </figure>
 
         <div class="card-body">
             <h2 class="card-title">{{ post.title }}</h2>
+            <h2>Автор: {{ post.author }}</h2>
             <h4>Коментарів: {{ post.comments.count }}</h4>
     </a>
     <div class="card-actions justify-end">
-
         <button
             class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
             id="dislike_{{post.id}}" onclick="dislike({{post.id}})"><i

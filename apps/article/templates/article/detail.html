@@ -4,29 +4,33 @@
 
 {% block content %}
 <img src="{% if not post.image %}
-    https://upload.wikimedia.org/wikipedia/ru/thumb/6/61/Rickrolling.gif/200px-Rickrolling.gif
+https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019
     {% else %}
     {{ post.image.url }}
     
     {% endif %}" alt="Shoes" class="w-full max-h-96 object-cover mb-4 rounded-md" />
+<div class="container m-4">
+    <h1 class="text-4xl font-bold">{{ post.title }}</h1>
 
-<h1 class="text-4xl font-bold mb-4">{{ post.title }}</h1>
+    {% if post.author == user %}
+    <div class="border-b-2 border-gray-200 py-4">
+        <a onclick="edit_post.showModal()" class="btn btn-primary">Edit</a>
+        <a onclick="delete_post.showModal()" class="btn btn-error">Delete</a>
+    </div>
+    {% endif %}
 
-{% if post.author == user %}
-<div class="my-4 border-b-2 border-gray-200 p-4">
-    <a onclick="edit_post.showModal()" class="btn btn-primary">Edit</a>
-    <a onclick="delete_post.showModal()" class="btn btn-error">Delete</a>
+    <div class="border-b-4 border-gray-200 py-4">
+        <p class="text-gray-500 mb-4">Author: {{ post.author }}</p>
+        <p class="text-gray-500 mb-4">Published: {{ post.created_at.date }}</p>
+        <p class="text-gray-500 mb-4">Likes: {{ post.like.count }}</p>
+        <p class="text-gray-500 mb-4">Dislikes: {{ post.dislike.count }}</p>
+        <p class="text-gray-500 mb-4">Comments: {{ post.comments.count }}</p>
+    </div>
+
+    <p class="mb-4">{{ post.content|linebreaks }}</p>
 </div>
-{% endif %}
-
-<p class="text-gray-500 mb-4">Author: {{ post.author }}</p>
-<p class="text-gray-500 mb-4">Published: {{ post.created_at.date }}</p>
-<p class="text-gray-500 mb-4">Likes: {{ post.like.count }}</p>
-<p class="text-gray-500 mb-4">Dislikes: {{ post.dislike.count }}</p>
-<p class="text-gray-500 mb-4">Comments: {{ post.comments.count }}</p>
 
 
-<p class="mb-4">{{ post.content }}</p>
 
 
 <hr class="my-4">

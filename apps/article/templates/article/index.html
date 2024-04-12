@@ -1,12 +1,19 @@
 {% extends 'base.html' %}
+
+{% load imagekit %}
+
+
 {% block title %}Blog{% endblock %}
 
 {% block content %}
+
 <div class="my-4 rounded-lg bg-base-300 p-9 ">
     <h1 class="text-3xl font-bold mb-4">Blog</h1>
-    <h1 class="text-2xl font-semibold mb-3">Кількість: {{ amount_posts }}</h1>
+    <h1 class="text-2xl font-semibold mb-3">Кількість: {{ amount_posts.count_posts }}</h1>
+    {% if user.is_authenticated %}
     <a onclick="my_modal_4.showModal()" class="btn btn-primary bg-gradient-to-r from-cyan-500 to-blue-500">Create
         Post</a>
+    {% endif %}
     <div class="my-4 border-b-2 border-gray-300 w-full"></div>
     <div class="grid grid-cols-3 gap-7">
         {% for post in all_posts %}
@@ -16,6 +23,7 @@
         {% endfor %}
     </div>
     <div class="join align-center justify-center flex my-4">
+        {% if all_posts.has_other_pages %}
         {% if all_posts.has_previous %}
         <a href="?page=1" class="join-item btn">«</a>
         <a href="?page={{ all_posts.previous_page_number }}" class="join-item btn">Previous Page</a>
@@ -28,6 +36,7 @@
         <a href="?page={{ all_posts.paginator.num_pages }}" class="join-item btn">»</a>
 
         {% endif %}
+        {% endif %}
     </div>
 </div>
 
@@ -36,7 +45,6 @@
         <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
-        <h3 class="font-bold text-lg mb-4">Create Post</h3>
         <form action="{% url 'article:create' %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="grid grid-cols-1 gap-6">

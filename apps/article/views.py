@@ -9,16 +9,21 @@ from django.http import JsonResponse
 from django.contrib import messages
 
 from django.core.paginator import Paginator
+from django.db.models import Count
 
 # Create your views here.
 def index(request):
-    all_posts = Post.objects.all()
-    amount_posts = Post.objects.count()
+    # select_related використовується, коли потрібно отримати дані з однієї таблиці та її зв'язаних таблиць,
+    # які мають зовнішні ключі (ForeignKey). Це допомагає зменшити кількість запитів до бази даних,
+    # але воно працює лише з одним рівнем вкладеності.
 
-    # for post in all_posts: # перебирання всіх постів
-    #     for s in post.comments.all(): # перебирання коментарів кожного поста 
-    #         if s.author_id == request.user.id: # і перевірка на ідентичність id юзера та автора коментарів 
-    #             print(1111)
+    # prefetch_related використовується, коли потрібно отримати дані з багатьох зв'язаних таблиць,
+    # які можуть бути пов'язані через ForeignKey або ManyToManyField (кращеManyToManyField). Це ефективно завантажує
+    # дані з кількох зв'язаних таблиць за один запит, дозволяючи уникнути додаткових запитів
+    # до бази даних при доступі до даних.
+
+    all_posts = Post.objects.all().select_related('author').prefetch_related("like", "dislike", "comments")
+    amount_posts = Post.objects.aggregate(count_posts=Count('pk'))
 
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
@@ -26,17 +31,17 @@ def index(request):
 
     context = {
         'all_posts': all_posts_page,
-        'created_form': PostForm(),
         'amount_posts': amount_posts,
+        'created_form': PostForm(),
     }
 
     return render(request, 'article/index.html', context)
 
 
 def detail(request, post_id):
-    post = get_object_or_404(Post, pk=post_id)
+    # post = get_object_or_404(Post, pk=post_id)
+    post = Post.objects.all().select_related('author').prefetch_related('comments', 'comments__author', 'comments__like', 'comments__dislike').get(pk=post_id)
 
-    post = Post.objects.get(pk=post_id)
     update_form = PostForm(instance=post)
     context = {
         'post': post,
@@ -48,6 +53,7 @@ def detail(request, post_id):
 def create_view(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
+
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
@@ -70,6 +76,7 @@ def update_view(request, post_id):
     if request.method == 'POST':
         post = get_object_or_404(Post, pk=post_id, author=request.user)
         form = PostForm(request.POST, request.FILES, instance=post)
+
         if form.is_valid():
             form.save()
             messages.success(request, 'Post updated successfully')
@@ -85,6 +92,7 @@ def like_view(request, post_id):
         user_dislike = None
         post = get_object_or_404(Post, pk=post_id)
         # print(post.like.all())
+
         if request.user in post.like.all():
             post.like.remove(request.user)
             user_like = False
@@ -103,6 +111,7 @@ def dislike_view(request, post_id):
         user_like = None
         post = get_object_or_404(Post, pk=post_id)
         # print(post.dislike.all())
+
         if request.user in post.dislike.all():
             post.dislike.remove(request.user)
             user_dislike = False
@@ -120,6 +129,7 @@ def like_comment_view(request, comment_id):
     if request.method == 'GET':
         user_dislike = None
         comment = get_object_or_404(Comment, pk=comment_id)
+
         if request.user in comment.like.all():
             comment.like.remove(request.user)
             user_like = False
