@@ -46,7 +46,7 @@ def signup_view(request):
 
 @login_required
 def profile_view(request):
-    all_posts = Post.objects.filter(author=request.user).prefetch_related("author").prefetch_related("like").prefetch_related("dislike")
+    all_posts = Post.objects.filter(author=request.user).prefetch_related("author", "like", "dislike", "comments")
 
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
