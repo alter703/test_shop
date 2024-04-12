@@ -9,11 +9,12 @@ from django.http import JsonResponse
 from django.contrib import messages
 
 from django.core.paginator import Paginator
+from django.db.models import Count
 
 # Create your views here.
 def index(request):
-    all_posts = Post.objects.prefetch_related("author", "like", "dislike", "comments")
-    amount_posts = Post.objects.count()
+    all_posts = Post.objects.all().prefetch_related("author", "like", "dislike", "comments")
+    amount_posts = Post.objects.aggregate(count_posts=Count('pk'))
 
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
