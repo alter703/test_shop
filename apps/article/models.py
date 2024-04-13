@@ -15,7 +15,7 @@ class Post(models.Model):
     content = models.TextField()
 
     image = ProcessedImageField(upload_to='post_images',
-                                processors=[ResizeToFill(750, 700)],
+                                processors=[ResizeToFill(850, 800)],
                                 format='JPEG',
                                 options={'quality': 90},
                                 null=True)
