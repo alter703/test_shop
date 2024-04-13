@@ -60,6 +60,9 @@ def create_view(request):
             post.save()
             messages.success(request, 'Post was created successfully')
             return redirect('article:detail' , post_id=post.id)
+        else:
+            messages.error(request, "Post wasn't created! Check you form and fill again")
+            return redirect('article:index')
 
 
 @login_required
@@ -67,7 +70,7 @@ def delete_view(request, post_id):
     if request.method == 'POST':
         post = get_object_or_404(Post, pk=post_id, author=request.user)
         post.delete()
-        messages.success(request, 'Post deleted successfully')
+        messages.success(request, 'Post was deleted successfully')
     return redirect('article:index')
 
 
@@ -79,7 +82,7 @@ def update_view(request, post_id):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Post updated successfully')
+            messages.success(request, 'Post was updated successfully')
         else:
             messages.error(request, 'Error updating post')
         return redirect('article:detail', post_id=post.id)
@@ -171,7 +174,7 @@ def comment_view(request, post_id):
                 content=form.cleaned_data['content']
             )
             comment.save()
-            messages.success(request, 'Comment created successfully')
+            messages.success(request, 'Comment was created successfully')
         else:
             messages.error(request, 'Error creating comment')
     return redirect('article:detail', post_id=post_id)

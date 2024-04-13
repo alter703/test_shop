@@ -9,49 +9,48 @@ https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.s
     {{ post.image.url }}
     
     {% endif %}" alt="Shoes" class="w-full max-h-96 object-cover mb-4 rounded-md" />
-<div class="container m-4">
-    <h1 class="text-4xl font-bold">{{ post.title }}</h1>
 
-    {% if post.author == user %}
-    <div class="border-b-2 border-gray-200 py-4">
-        <a onclick="edit_post.showModal()" class="btn btn-primary">Edit</a>
-        <a onclick="delete_post.showModal()" class="btn btn-error">Delete</a>
-    </div>
-    {% endif %}
 
-    <div class="border-b-4 border-gray-200 py-4">
-        <p class="text-gray-500 mb-4">Author: {{ post.author }}</p>
-        <p class="text-gray-500 mb-4">Published: {{ post.created_at.date }}</p>
-        <p class="text-gray-500 mb-4">Likes: {{ post.like.count }}</p>
-        <p class="text-gray-500 mb-4">Dislikes: {{ post.dislike.count }}</p>
-        <p class="text-gray-500 mb-4">Comments: {{ post.comments.count }}</p>
-    </div>
+<h1 class="text-4xl font-bold ps-5">{{ post.title }}</h1>
 
-    <p class="mb-4">{{ post.content|linebreaks }}</p>
+{% if post.author == user %}
+<div class="border-b-2 border-gray-200 py-4 ps-5">
+    <a onclick="edit_post.showModal()" class="btn btn-primary">Edit</a>
+    <a onclick="delete_post.showModal()" class="btn btn-error">Delete</a>
+</div>
+{% endif %}
+
+<div class="border-b-4 border-gray-200 py-4 ps-5">
+    <p class="text-gray-500 mb-4">Author: {{ post.author }}</p>
+    <p class="text-gray-500 mb-4">Published: {{ post.created_at.date }}</p>
+    <p class="text-gray-500 mb-4">Likes: {{ post.like.count }}</p>
+    <p class="text-gray-500 mb-4">Dislikes: {{ post.dislike.count }}</p>
+    <p class="text-gray-500 mb-4">Comments: {{ post.comments.count }}</p>
 </div>
 
-
-
+<div class="comtainer my-5 mx-6">
+    <p class="text-lg text-white">{{ post.content|linebreaksbr }}</p>
+</div>
 
 <hr class="my-4">
-<h3 class="text-2xl font-bold mb-4">Comments</h3>
+<h3 class="text-2xl font-bold mb-4 ps-4">Comments</h3>
 <form action="{% url 'article:comment' post_id=post.id %}" method="post">
     {% csrf_token %}
-    <div class="grid grid-cols-1 gap-6">
+    <div class="grid grid-cols-1 gap-6 justify-items-stretch">
         <div class="form-control">
-            <textarea class="textarea textarea-bordered textarea-primary text-2xl" name="content" placeholder="Коментар"
-                rows="3"></textarea>
+            <textarea class="textarea textarea-bordered textarea-primary text-2xl mx-5" name="content"
+                placeholder="Коментар" rows="3"></textarea>
         </div>
-        <button class="btn btn-primary">Comment</button>
+        <button class="btn btn-primary mx-5 justify-self-start">Comment</button>
     </div>
 </form>
 <div class="grid grid-cols-1 gap-6 mt-4">
     {% for comment in post.comments.all %}
-    <div class="p-4 bg-base-200 rounded-lg w-flex">
+    <div class="p-3 m-3 bg-base-200 rounded-lg">
         <p class="text-gray-500 mb-4">Author: {{ comment.author }}</p>
         <p class="text-gray-500 mb-4">Published: {{ comment.created_at|timesince }} ago</p>
         <p>{{ comment.content }}</p>
-        <div class="container">
+        <div class="container m-1">
             <button
                 class="btn {% if comment.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
                 id="dislike_{{comment.id}}" onclick="dislike({{comment.id}})">

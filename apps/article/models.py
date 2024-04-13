@@ -20,7 +20,7 @@ class Post(models.Model):
                                 options={'quality': 90},
                                 null=True)
     thumbnail = ImageSpecField(source='image', 
-                               processors=[ResizeToFill(300, 300)],
+                               processors=[ResizeToFill(350, 250)],
                                format='WEBP', 
                                options={'quality': 60})
 
