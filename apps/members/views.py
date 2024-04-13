@@ -9,6 +9,8 @@ from apps.article.forms import PostForm
 
 from django.core.paginator import Paginator
 
+from .models import Profile
+
 # Create your views here.
 def login_view(request):
     form = AuthenticationForm()
@@ -36,6 +38,8 @@ def signup_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            profile = Profile(user=user)
+            profile.save()
             login(request, user)
             messages.success(request, 'You have been signed up')
             return redirect('main:index')
