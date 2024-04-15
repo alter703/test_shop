@@ -70,19 +70,16 @@ def profile_view(request, pk):
 
 @login_required
 def profile_edit_view(request):
-    profile = Profile.objects.get(user=request.user)
+    profile = Profile.objects.select_related('user').get(user=request.user)
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Profile updated')
+            messages.success(request, 'Profile is updated')
             return redirect('members:profile', pk=profile.pk)
         else:
             messages.error(request, 'Error updating profile')
     else:
         form = ProfileForm(instance=profile)
-
-        for i in form:
-            print(i)
-            
-    return render(request, 'members/profile-edit.html', {'form': form})
+     
+    return render(request, 'members/profile_edit.html', {'form': form})

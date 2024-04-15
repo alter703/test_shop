@@ -18,8 +18,8 @@
                         class="file-input file-input-bordered file-input-accent  w-full max-w-xs" placeholder="Image">
                 </div>
                 {% elif field.name == 'biography' %}
-                <textarea name="biography" cols="40" rows="10"
-                    class="textarea textarea-bordered">{% if field.value %}{{ field.value }}{% endif %}</textarea>
+                <textarea name="biography" cols="40" rows="10" class="textarea textarea-bordered"
+                    placeholder="Bio">{% if field.value %}{{ field.value }}{% endif %}</textarea>
                 {% endif %}
                 {% endfor %}
                 <button class="btn btn-primary">Edit</button>
