@@ -20,7 +20,7 @@
             <div class="dropdown dropdown-end">
                 <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
                     <div class="w-10 rounded-full">
-                        <img alt="Tailwind CSS Navbar component" src="{{ user.profile.get_avatar }}" />
+                        <img alt="Tailwind CSS Navbar component" src="{{ user.profile.get_avatar_thumbnail }}" />
                     </div>
                 </div>
                 <ul tabindex="0"
@@ -28,7 +28,7 @@
                     <span class="p-2 text-sm text-primary"><b>I am <i>{{ user.username }}</i></b></span>
                     <hr class="my-2 border-base-100">
                     <li>
-                        <a class="justify-between" href="{% url 'members:profile' %}">
+                        <a class="justify-between" href="{% url 'members:profile' user.id %}">
                             Profile
                         </a>
                     </li>

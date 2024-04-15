@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
@@ -10,6 +10,7 @@ from apps.article.forms import PostForm
 from django.core.paginator import Paginator
 
 from .models import Profile
+from .forms import ProfileForm
 
 # Create your views here.
 def login_view(request):
@@ -26,11 +27,13 @@ def login_view(request):
     
     return render(request, 'members/login.html', {'form': form})
 
+
 @login_required
 def logout_view(request):
     logout(request)
     messages.info(request, 'You have been logged out')
     return redirect('main:index')
+
 
 def signup_view(request):
     form = UserCreationForm()
@@ -48,9 +51,10 @@ def signup_view(request):
             
     return render(request, 'members/signup.html', {'form': form})
 
+
 @login_required
-def profile_view(request):
-    all_posts = Post.objects.filter(author=request.user).prefetch_related("author", "like", "dislike", "comments")
+def profile_view(request, pk):
+    all_posts = Post.objects.filter(author_id=pk).prefetch_related("author", "like", "dislike", "comments")
 
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
@@ -62,3 +66,23 @@ def profile_view(request):
     }
 
     return render(request, 'members/profile.html', context)
+
+
+@login_required
+def profile_edit_view(request):
+    profile = Profile.objects.get(user=request.user)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Profile updated')
+            return redirect('members:profile', pk=profile.pk)
+        else:
+            messages.error(request, 'Error updating profile')
+    else:
+        form = ProfileForm(instance=profile)
+
+        for i in form:
+            print(i)
+            
+    return render(request, 'members/profile-edit.html', {'form': form})

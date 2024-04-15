@@ -29,3 +29,10 @@ class Profile(models.Model):
             return self.avatar.url
         else:
             return 'https://www.gravatar.com/avatar/{}?d=identicon'.format(self.user.username)
+
+
+    def get_avatar_thumbnail(self):
+        if self.avatar_thumbnail:
+            return self.avatar_thumbnail.url
+        else:
+            return 'https://www.gravatar.com/avatar/{}?d=identicon'.format(self.user.username)
