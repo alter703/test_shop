@@ -6,9 +6,7 @@
 <div class="flex my-10 gap-10">
     <div class="w-1/3 bg-base-200 p-10 rounded-box">
         <h1 class="text-3xl font-bold mb-4">Profile</h1>
-        <img src="{% if not user.profile.avatar %} 
-        https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019{% else %}{{ user.profile.avatar.url }}{%endif %}"
-            alt="Profile Photo" class="ms-3 my-3 rounded">
+        <img src="{{ user.profile.get_avatar }}" alt="avatar" width="100%" class="ms-3 my-3 rounded">
         <p class="text-gray-500 mb-4">Username: {{ user.username }}</p>
         <p class="text-gray-500 mb-4">Email: {{ user.email }}</p>
         <a href="{% url 'members:logout' %}"
