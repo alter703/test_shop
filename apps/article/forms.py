@@ -10,4 +10,4 @@ class PostForm(forms.ModelForm):
 
 
 class CommentForm(forms.Form):
-    content = forms.CharField(min_length=6,max_length=200)
+    content = forms.CharField(min_length=4,max_length=200)

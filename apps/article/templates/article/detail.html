@@ -3,14 +3,7 @@
 {% block title %}Blog{% endblock %}
 
 {% block content %}
-<img src="{% if not post.image %}
-https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019
-    {% else %}
-    {{ post.image.url }}
-    
-    {% endif %}" alt="Shoes" class="w-full max-h-96 object-cover mb-4 rounded-md" />
-
-
+<img src="{{ post.get_post_image }}" alt="Shoes" class="w-full max-h-96 object-cover mb-4 rounded-md" />
 <h1 class="text-4xl font-bold ps-5">{{ post.title }}</h1>
 
 {% if post.author == user %}
