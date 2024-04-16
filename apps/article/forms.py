@@ -8,6 +8,10 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = ('title', 'content', 'image')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["content"].required = False
+
 
 class CommentForm(forms.Form):
     content = forms.CharField(min_length=4,max_length=200)

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     
     "debug_toolbar",
     "imagekit",
+    "ckeditor",
 
     'apps.main',
     'apps.article',
@@ -149,3 +150,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_REDIRECT_URL = 'main:index'
 LOGOUT_REDIRECT_URL = 'main:index'
 LOGIN_URL = 'members:login'
+
+
+CKEDITOR_CONFIGS = {
+    'extends': {
+        'toolbar': 'Custom',
+        'width': 750,
+        'toolbar_Custom': [
+            ['Bold', 'Italic', 'Underline'],
+            ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['Link', 'Unlink'],
+            ['RemoveFormat', 'Source']
+        ]
+    }
+}

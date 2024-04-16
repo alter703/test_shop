@@ -25,17 +25,17 @@ def index(request):
     all_posts = Post.objects.all().select_related('author', 'author__profile').prefetch_related("like", "dislike", "comments")
     amount_posts = Post.objects.aggregate(count_posts=Count('pk'))
 
+    for post in all_posts:
+        print(post)
+
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
     all_posts_page = paginator.get_page(page)
 
-    update_form = PostForm
 
     context = {
         'all_posts': all_posts_page,
         'amount_posts': amount_posts,
-        'created_form': PostForm(),
-        'update_form': update_form,
     }
 
     return render(request, 'article/index.html', context)
@@ -51,6 +51,14 @@ def detail(request, post_id):
         'update_form': update_form,
     }
     return render(request, 'article/detail.html', context)
+
+
+def create_post_view(request):
+    context = {
+        'created_form': PostForm(),
+    }
+
+    return render(request, 'article/create_post.html', context)
 
 
 def create_view(request):
