@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from .forms import PostForm, CommentForm
 
 from django.http import JsonResponse
@@ -25,9 +25,6 @@ def index(request):
     all_posts = Post.objects.all().select_related('author', 'author__profile').prefetch_related("like", "dislike", "comments")
     amount_posts = Post.objects.aggregate(count_posts=Count('pk'))
 
-    for post in all_posts:
-        print(post)
-
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
     all_posts_page = paginator.get_page(page)
@@ -42,13 +39,17 @@ def index(request):
 
 
 def detail(request, post_id):
-    post = get_object_or_404(Post.objects.select_related('author', 'author__profile').prefetch_related('comments__author', 'comments__like', 'comments__dislike'), pk=post_id)
+    post = get_object_or_404(Post.objects.select_related('author', 'author__profile').prefetch_related('comments__author', 'comments__like', 'comments__dislike', 'tags'), pk=post_id)
     # post = Post.objects.all().select_related('author').prefetch_related('comments', 'comments__author', 'comments__like', 'comments__dislike', 'comments__post').get(pk=post_id)
+
+    tags = Tag.objects.all()
+    print(tags)
 
     update_form = PostForm(instance=post)
     context = {
         'post': post,
         'update_form': update_form,
+        'tags': tags,
     }
     return render(request, 'article/detail.html', context)
 
@@ -56,24 +57,41 @@ def detail(request, post_id):
 def create_post_view(request):
     context = {
         'created_form': PostForm(),
+        'all_tags': Tag.objects.all()
     }
 
     return render(request, 'article/create_post.html', context)
 
-
 def create_view(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
-
+        print("Form data before saving:", form.data)
+        
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            form.save_m2m()  # Ensure many-to-many relationships (tags) are saved
+            print("Form data after saving:", form.data)  # Check if tags are included
             messages.success(request, 'Post was created successfully')
             return redirect('article:detail' , post_id=post.id)
         else:
-            messages.error(request, "Post wasn't created! Check you form and fill again")
+            messages.error(request, "Post wasn't created! Check your form and fill again")
             return redirect('article:index')
+
+# def create_view(request):
+#     if request.method == 'POST':
+#         form = PostForm(request.POST, request.FILES)
+
+#         if form.is_valid():
+#             post = form.save(commit=False)
+#             post.author = request.user
+#             post.save()
+#             messages.success(request, 'Post was created successfully')
+#             return redirect('article:detail' , post_id=post.id)
+#         else:
+#             messages.error(request, "Post wasn't created! Check you form and fill again")
+#             return redirect('article:index')
 
 
 @login_required

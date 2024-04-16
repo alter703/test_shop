@@ -7,6 +7,12 @@
 
         <div class="card-body">
             <h2 class="card-title">{{ post.title }}</h2>
+            <div class="flex flex-row justify-start my-2">
+                {% for tag in post.tags.all %}
+                <div class="badge badge-accent italic font-medium p-2 mx-1">{{ tag.name }}</div>
+                {% endfor %}
+            </div>
+
             <div class="flex items-center mt-4">
                 <img src="{{post.author.profile.get_avatar}}" alt="avatar" class="w-8 rounded-full" />
                 <h2 class="text-lg ml-3">{{ post.author }}</h2>
