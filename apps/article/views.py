@@ -22,7 +22,7 @@ def index(request):
     # дані з кількох зв'язаних таблиць за один запит, дозволяючи уникнути додаткових запитів
     # до бази даних при доступі до даних.
 
-    all_posts = Post.objects.all().select_related('author').prefetch_related("like", "dislike", "comments")
+    all_posts = Post.objects.all().select_related('author', 'author__profile').prefetch_related("like", "dislike", "comments")
     amount_posts = Post.objects.aggregate(count_posts=Count('pk'))
 
     paginator = Paginator(all_posts, 3)
@@ -39,7 +39,7 @@ def index(request):
 
 
 def detail(request, post_id):
-    post = get_object_or_404(Post.objects.select_related('author').prefetch_related('comments__author', 'comments__like', 'comments__dislike'), pk=post_id)
+    post = get_object_or_404(Post.objects.select_related('author', 'author__profile').prefetch_related('comments__author', 'comments__like', 'comments__dislike'), pk=post_id)
     # post = Post.objects.all().select_related('author').prefetch_related('comments', 'comments__author', 'comments__like', 'comments__dislike', 'comments__post').get(pk=post_id)
 
     update_form = PostForm(instance=post)

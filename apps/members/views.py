@@ -54,15 +54,19 @@ def signup_view(request):
 
 @login_required
 def profile_view(request, pk):
-    all_posts = Post.objects.filter(author_id=pk).select_related("author").prefetch_related("like", "dislike", "comments")
+    profile = get_object_or_404(Profile.objects.select_related('user', 'user__profile').prefetch_related(), pk=pk)
+    all_posts = Post.objects.filter(author=request.user).select_related("author", 'author__profile').prefetch_related("like", "dislike", "comments")
 
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
     all_posts_page = paginator.get_page(page)
 
     context = {
+        'is_owner': request.user == profile.user,
+        'profile': profile,
         'all_posts': all_posts_page,
         'created_form': PostForm(),
+        'all_posts': all_posts,
     }
 
     return render(request, 'members/profile.html', context)

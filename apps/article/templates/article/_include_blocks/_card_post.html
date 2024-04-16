@@ -7,21 +7,23 @@
 
         <div class="card-body">
             <h2 class="card-title">{{ post.title }}</h2>
-            <h2>Автор: {{ post.author }}</h2>
+            <div class="flex items-center mt-4">
+                <img src="{{post.author.profile.get_avatar}}" alt="avatar" class="w-8 rounded-full" />
+                <h2 class="text-lg ml-3">{{ post.author }}</h2>
+            </div>
     </a>
     <div class="card-actions justify-end">
         <div class="flex flex-row flex-wrap mx-2">
-            <p class="text-lg mx-2 text-white"><i class="fa-solid fa-comment text-white mt-4 mx-2"></i>
+            <p class="text-lg mx-3 text-white"><i class="fa-solid fa-comment text-white mt-4 mx-1"></i>
                 {{ post.comments.count }}
             </p>
             {% if user == post.author %}
-            <p class="text-lg mx-2 text-white"><i class="fa-solid fa-heart mt-4 text-white mx-2"></i>
+            <p class="text-lg mx-3 text-white"><i class="fa-solid fa-heart mt-4 text-white mx-1"></i>
                 {{ post.like.count }}</p>
-            <p class="text-lg mx-2 text-white"><i class="fa-solid fa-thumbs-down text-white mt-4 mx-2"></i>
+            <p class="text-lg mx-3 text-white"><i class="fa-solid fa-thumbs-down text-white mt-4 mx-1"></i>
                 {{ post.dislike.count }}
             </p>
-            {% endif %}
-            {% if post.author_id != user.id %}
+            {% else %}
             <button class="btn btn-dark text-white text-lg mx-1" id="dislike_{{post.id}}"
                 onclick="dislike({{post.id}})"><i
                     class="fa-solid fa-thumbs-down {%if user in post.dislike.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
