@@ -38,6 +38,7 @@
         {% endfor %}
     </div>
     <div class="join align-center justify-center flex my-4">
+        {% if all_posts.has_other_pages %}
         {% if all_posts.has_previous %}
         <a href="?page=1" class="join-item btn">«</a>
         <a href="?page={{ all_posts.previous_page_number }}" class="join-item btn">Previous Page</a>
@@ -49,6 +50,7 @@
         <a href="?page={{ all_posts.next_page_number }}" class="join-item btn">Next Page</a>
         <a href="?page={{ all_posts.paginator.num_pages }}" class="join-item btn">»</a>
 
+        {% endif %}
         {% endif %}
     </div>
 </div>
