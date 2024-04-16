@@ -8,19 +8,30 @@
         <div class="card-body">
             <h2 class="card-title">{{ post.title }}</h2>
             <h2>Автор: {{ post.author }}</h2>
-            <h4>Коментарів: {{ post.comments.count }}</h4>
     </a>
     <div class="card-actions justify-end">
-        <button
-            class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
-            id="dislike_{{post.id}}" onclick="dislike({{post.id}})"><i
-                class="fa-solid fa-thumbs-down {%if user in post.dislike.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
-            {{ post.dislike.count }}</button>
-        <button
-            class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
-            id="like_{{post.id}}" onclick="like({{post.id}})"><i
-                class="fa-solid fa-heart {%if user in post.like.all %}text-red-500{%else%}text-white{%endif%}"></i>
-            {{ post.like.count }}</button>
+        <div class="flex flex-row flex-wrap mx-2">
+            <p class="text-lg mx-2 text-white"><i class="fa-solid fa-comment text-white mt-4 mx-2"></i>
+                {{ post.comments.count }}
+            </p>
+            {% if user == post.author %}
+            <p class="text-lg mx-2 text-white"><i class="fa-solid fa-heart mt-4 text-white mx-2"></i>
+                {{ post.like.count }}</p>
+            <p class="text-lg mx-2 text-white"><i class="fa-solid fa-thumbs-down text-white mt-4 mx-2"></i>
+                {{ post.dislike.count }}
+            </p>
+            {% endif %}
+            {% if post.author_id != user.id %}
+            <button class="btn btn-dark text-white text-lg mx-1" id="dislike_{{post.id}}"
+                onclick="dislike({{post.id}})"><i
+                    class="fa-solid fa-thumbs-down {%if user in post.dislike.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
+                {{ post.dislike.count }}</button>
+            <button class="btn btn-dark text-white text-lg mx-1" id="like_{{post.id}}" onclick="like({{post.id}})"><i
+                    class="fa-solid fa-heart {%if user in post.like.all %}text-red-500{%else%}text-white{%endif%}"></i>
+                {{ post.like.count }}</button>
+            {% endif %}
+        </div>
+
     </div>
 </div>
 </a>
