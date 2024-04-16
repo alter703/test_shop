@@ -33,7 +33,7 @@
     <div class="grid grid-cols-3 gap-7">
         {% for post in posts %}
 
-        {% include 'article/_include_blocks/_card_post.html' with post=post %}
+        {% include 'article/_include_blocks/_card_post.html' with post=post profile=profile %}
 
         {% endfor %}
     </div>
