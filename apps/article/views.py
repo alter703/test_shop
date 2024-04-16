@@ -29,10 +29,13 @@ def index(request):
     page = request.GET.get('page')
     all_posts_page = paginator.get_page(page)
 
+    update_form = PostForm
+
     context = {
         'all_posts': all_posts_page,
         'amount_posts': amount_posts,
         'created_form': PostForm(),
+        'update_form': update_form,
     }
 
     return render(request, 'article/index.html', context)

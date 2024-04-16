@@ -83,7 +83,7 @@
         <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
-        <h3 class="font-bold text-lg mb-4">Create Post</h3>
+        <h3 class="font-bold text-lg mb-4">Edit Post</h3>
         <form action="{% url 'article:update' post.id %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="grid grid-cols-1 gap-6">
