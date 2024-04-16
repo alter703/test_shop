@@ -6,13 +6,14 @@ from django.contrib.auth.models import User
 from imagekit.models import ProcessedImageField, ImageSpecField
 from imagekit.processors import ResizeToFill
 
+from ckeditor.fields import RichTextField
 
 # Create your models here.
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts', null=True, blank=True, default=None)
 
     title = models.CharField(max_length=100)
-    content = models.TextField()
+    content = RichTextField('Text', config_name='extends')
 
     image = ProcessedImageField(upload_to='post_images',
                                 processors=[ResizeToFill(850, 800)],
