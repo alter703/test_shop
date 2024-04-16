@@ -6,10 +6,10 @@
         </figure>
 
         <div class="card-body">
-            <h2 class="card-title">{{ post.title }}</h2>
+            <h2 class="card-title mx-1 my-2">{{ post.title }}</h2>
             <div class="flex flex-row justify-start my-2">
                 {% for tag in post.tags.all %}
-                <div class="badge badge-accent italic font-medium p-2 mx-1">{{ tag.name }}</div>
+                <div class="badge bg-gradient-to-r from-indigo-500 to-80% shadow-sm italic font-medium p-2 mx-1">{{ tag.name }}</div>
                 {% endfor %}
             </div>
 
