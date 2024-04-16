@@ -18,10 +18,10 @@
                 {{ post.comments.count }}
             </p>
             {% if user == post.author %}
-            <p class="text-lg mx-3 text-white"><i class="fa-solid fa-heart mt-4 text-white mx-1"></i>
-                {{ post.like.count }}</p>
             <p class="text-lg mx-3 text-white"><i class="fa-solid fa-thumbs-down text-white mt-4 mx-1"></i>
                 {{ post.dislike.count }}
+            <p class="text-lg mx-3 text-white"><i class="fa-solid fa-heart mt-4 text-white mx-1"></i>
+                {{ post.like.count }}</p>
             </p>
             {% else %}
             <button class="btn btn-dark text-white text-lg mx-1" id="dislike_{{post.id}}"
