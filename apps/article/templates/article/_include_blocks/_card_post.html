@@ -14,7 +14,7 @@
     </a>
     <div class="card-actions justify-end">
         <div class="flex flex-row flex-wrap mx-2">
-            {% if user == profile.user %}
+            {% if user == post.author %}
             <div class="dropdown">
                 <div tabindex="0" role="button" class="btn m-1">Options</div>
                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
@@ -25,7 +25,7 @@
             <p class="text-lg mx-3 text-white"><i class="fa-solid fa-comment text-white mt-4 mx-1"></i>
                 {{ post.comments.count }}
             </p>
-            {% if user == profile.user %}
+            {% if user == post.author %}
             <p class="text-lg mx-3 text-white"><i class="fa-solid fa-thumbs-down text-white mt-4 mx-1"></i>
                 {{ post.dislike.count }}
             <p class="text-lg mx-3 text-white"><i class="fa-solid fa-heart mt-4 text-white mx-1"></i>
