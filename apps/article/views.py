@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from .forms import PostForm, CommentForm
 
 from django.http import JsonResponse
@@ -22,11 +22,8 @@ def index(request):
     # дані з кількох зв'язаних таблиць за один запит, дозволяючи уникнути додаткових запитів
     # до бази даних при доступі до даних.
 
-    all_posts = Post.objects.all().select_related('author', 'author__profile').prefetch_related("like", "dislike", "comments")
+    all_posts = Post.objects.all().select_related('author', 'author__profile').prefetch_related("like", "dislike", "comments", "tags")
     amount_posts = Post.objects.aggregate(count_posts=Count('pk'))
-
-    for post in all_posts:
-        print(post)
 
     paginator = Paginator(all_posts, 3)
     page = request.GET.get('page')
@@ -42,13 +39,19 @@ def index(request):
 
 
 def detail(request, post_id):
-    post = get_object_or_404(Post.objects.select_related('author', 'author__profile').prefetch_related('comments__author', 'comments__like', 'comments__dislike'), pk=post_id)
+    post = get_object_or_404(Post.objects.select_related('author', 'author__profile').prefetch_related('comments__author', 'comments__like', 'comments__dislike', 'tags'), pk=post_id)
     # post = Post.objects.all().select_related('author').prefetch_related('comments', 'comments__author', 'comments__like', 'comments__dislike', 'comments__post').get(pk=post_id)
 
+    tags = Tag.objects.all()
+    # print(tags)
+    tag_ids = list(post.tags.values_list('id', flat=True))
     update_form = PostForm(instance=post)
+
     context = {
         'post': post,
         'update_form': update_form,
+        'tags': tags,
+        'tag_ids': tag_ids
     }
     return render(request, 'article/detail.html', context)
 
@@ -56,24 +59,27 @@ def detail(request, post_id):
 def create_post_view(request):
     context = {
         'created_form': PostForm(),
+        'all_tags': Tag.objects.all()
     }
 
     return render(request, 'article/create_post.html', context)
 
-
 def create_view(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
-
+        print("Form data before saving:", form.data)
+        
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
             post.save()
+            form.save_m2m()  # Ensure many-to-many relationships (tags) are saved
+            print("Form data after saving:", form.data)  # Check if tags are included
             messages.success(request, 'Post was created successfully')
             return redirect('article:detail' , post_id=post.id)
         else:
-            messages.error(request, "Post wasn't created! Check you form and fill again")
-            return redirect('article:index')
+            messages.error(request, "Post wasn't created! Check your form and fill again")
+            return redirect('article:create-post')
 
 
 @login_required
@@ -105,7 +111,6 @@ def like_view(request, post_id):
     if request.method == 'GET':
         user_dislike = None
         post = get_object_or_404(Post, pk=post_id)
-        # print(post.like.all())
 
         if request.user in post.like.all():
             post.like.remove(request.user)
@@ -124,7 +129,6 @@ def dislike_view(request, post_id):
     if request.method == 'GET':
         user_like = None
         post = get_object_or_404(Post, pk=post_id)
-        # print(post.dislike.all())
 
         if request.user in post.dislike.all():
             post.dislike.remove(request.user)
@@ -161,6 +165,7 @@ def dislike_comment_view(request, comment_id):
     if request.method == 'GET':
         user_like = None
         comment = get_object_or_404(Comment, pk=comment_id)
+
         if request.user in comment.dislike.all():
             comment.dislike.remove(request.user)
             user_dislike = False

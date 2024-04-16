@@ -54,8 +54,8 @@ def signup_view(request):
 
 @login_required
 def profile_view(request, pk):
-    profile = get_object_or_404(Profile.objects.select_related('user', 'user__profile').prefetch_related(), pk=pk)
-    posts = Post.objects.filter(author=profile.user).select_related("author", 'author__profile').prefetch_related("like", "dislike", "comments")
+    profile = get_object_or_404(Profile.objects.select_related('user', 'user__profile'), pk=pk)
+    posts = Post.objects.filter(author=profile.user).select_related("author", 'author__profile').prefetch_related("like", "dislike", "comments", "tags")
 
     paginator = Paginator(posts, 6)
     page_number = request.GET.get('page')

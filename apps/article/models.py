@@ -29,7 +29,9 @@ class Post(models.Model):
     dislike = models.ManyToManyField(User, related_name='dislike_posts', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
+    tags = models.ManyToManyField('Tag', related_name='tags', null=True, blank=True)
+
 
     class Meta:
         ordering = ['-created_at']
@@ -71,3 +73,11 @@ class Comment(models.Model):
         
     def __str__(self):
         return self.content
+
+
+
+class Tag(models.Model):
+    name = models.CharField(max_length=100, unique=True, blank=True, null=True)
+
+    def __str__(self):
+        return self.name

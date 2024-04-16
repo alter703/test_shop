@@ -5,6 +5,11 @@
 {% block content %}
 <img src="{{ post.get_post_image }}" alt="Shoes" class="w-full max-h-96 object-cover mb-4 rounded-md" />
 <h1 class="text-4xl font-bold ps-5">{{ post.title }}</h1>
+<div class="flex flex-row justify-start my-2 ps-5">
+    {% for tag in post.tags.all %}
+    <div class="badge bg-gradient-to-r from-indigo-500 to-80% shadow-sm italic font-medium p-3 mx-1">{{ tag.name }}</div>
+    {% endfor %}
+</div>
 
 {% if post.author == user %}
 <div class="border-b-2 border-gray-200 py-4 ps-5">
@@ -86,28 +91,36 @@
         <div class="container flex justify-center bg-base-100 my-4 p-7 w-full">
             <form action="{% url 'article:update' post.id %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="grid grid-cols-1 gap-6">
-                    <div class="form-control">
-                        {{ update_form.media }}
-                        {% for field in update_form %}
-                        <label class="label">
-                            <span class="label-text font-semibold">{{ field.label }}</span>
-                        </label>
-                        {% if field.name == 'content' %}
-                        <div class="ck-content text-gray-700">
-                            {{ field }}
-                        </div>
-                        {% elif field.name == 'image' %}
-                        <input type="file" name="{{ field.name }}"
-                            class="file-input file-input-bordered file-input-accent  w-full max-w-xs"
-                            placeholder="{{ field.label }}" value="{{ field.value }}">
-                        {% else %}
-                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}"
-                            class="input input-bordered" placeholder="{{ field.label }}" value="{{ field.value }}">
-                        {% endif %}
-                    </div>
-                    {% endfor %}
-                    <button class="btn btn-success m-3 align-center">Update</button>
+            <div class="grid grid-cols-1 gap-6">
+            {{ update_form.media }}
+            {% for field in update_form %}
+              <div class="form-control">
+                  <label class="label">
+                    <span class="label-text">{{ field.label }}</span>
+                  </label>
+
+               {% if field.name == 'content' %}
+               <div class="ck-content text-gray-700">
+                {{ field }}
+              </div>
+                {% elif field.name == 'image' %}
+                <input type="file" name="{{ field.name }}" class="file-input file-input-bordered file-input-accent  w-full max-w-xs" placeholder="{{ field.label }}" value="{{ field.value }}">
+                {% elif field.name == 'tags' %}
+
+                <div id="id_tags"><div>
+                    {% for tag in tags %}
+                    <label class='cursor-pointer label' for="id_tags_{{forloop.counter0}}"><input type="checkbox" name="tags" value="{{tag.id}}" {% if tag.id in tag_ids %} checked {% endif %}>
+                 {{tag.name}}</label>
+                 {% endfor%}               
+                </div>
+                </div>
+
+                {% else %}
+                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" class="input input-bordered" placeholder="{{ field.label }}" value="{{ field.value }}">
+                {% endif %}
+              </div>
+            {% endfor %}
+                    <button class="btn btn-success m-3 bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%">Update</button>
                 </div>
             </form>
         </div>
