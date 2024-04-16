@@ -3,14 +3,7 @@
 {% block title %}Blog{% endblock %}
 
 {% block content %}
-<img src="{% if not post.image %}
-https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019
-    {% else %}
-    {{ post.image.url }}
-    
-    {% endif %}" alt="Shoes" class="w-full max-h-96 object-cover mb-4 rounded-md" />
-
-
+<img src="{{ post.get_post_image }}" alt="Shoes" class="w-full max-h-96 object-cover mb-4 rounded-md" />
 <h1 class="text-4xl font-bold ps-5">{{ post.title }}</h1>
 
 {% if post.author == user %}
@@ -21,7 +14,13 @@ https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.s
 {% endif %}
 
 <div class="border-b-4 border-gray-200 py-4 ps-5">
-    <p class="text-gray-500 mb-4">Author: {{ post.author }}</p>
+    <a href="{% url 'members:profile' post.author.profile.id %}">
+        <div class="flex items-center mt-4">
+            <img src="{{post.author.profile.get_avatar}}" alt="avatar" class="w-8 rounded-full mb-4" />
+            <h2 class="text-lg ml-3 mb-4">{{ post.author }}</h2>
+        </div>
+    </a>
+
     <p class="text-gray-500 mb-4">Published: {{ post.created_at.date }}</p>
     <p class="text-gray-500 mb-4">Likes: {{ post.like.count }}</p>
     <p class="text-gray-500 mb-4">Dislikes: {{ post.dislike.count }}</p>
@@ -51,17 +50,27 @@ https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.s
         <p class="text-gray-500 mb-4">Published: {{ comment.created_at|timesince }} ago</p>
         <p>{{ comment.content }}</p>
         <div class="container m-1">
-            <button
-                class="btn {% if comment.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
-                id="dislike_{{comment.id}}" onclick="dislike({{comment.id}})">
-                <i
-                    class="fa-solid fa-thumbs-down {%if user in comment.dislike.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
-                {{ comment.dislike.count }}</button>
-            <button
-                class="btn {% if comment.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
-                id="like_{{comment.id}}" onclick="like({{comment.id}})"><i
-                    class="fa-solid fa-heart {%if user in comment.like.all %}text-red-500{%else%}text-white{%endif%}"></i>
-                {{ comment.like.count }}</button>
+            <div class="flex flex-row flex-wrap mx-2">
+                {% if user == post.author %}
+                <p class="text-lg mx-3 text-white"><i class="fa-solid fa-heart mt-4 text-white mx-1"></i>
+                    {{ comment.like.count }}</p>
+                <p class="text-lg mx-3 text-white"><i class="fa-solid fa-thumbs-down text-white mt-4 mx-1"></i>
+                    {{ comment.dislike.count }}
+                </p>
+                {% else %}
+                <button
+                    class="btn {% if comment.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
+                    id="dislike_{{comment.id}}" onclick="dislike({{comment.id}})">
+                    <i
+                        class="fa-solid fa-thumbs-down {%if user in comment.dislike.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
+                    {{ comment.dislike.count }}</button>
+                <button
+                    class="btn {% if comment.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
+                    id="like_{{comment.id}}" onclick="like({{comment.id}})"><i
+                        class="fa-solid fa-heart {%if user in comment.like.all %}text-red-500{%else%}text-white{%endif%}"></i>
+                    {{ comment.like.count }}</button>
+                {% endif %}
+            </div>
         </div>
 
     </div>
@@ -74,7 +83,7 @@ https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.s
         <form method="dialog">
             <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
         </form>
-        <h3 class="font-bold text-lg mb-4">Create Post</h3>
+        <h3 class="font-bold text-lg mb-4">Edit Post</h3>
         <form action="{% url 'article:update' post.id %}" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="grid grid-cols-1 gap-6">
@@ -96,7 +105,7 @@ https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.s
                     {% endif %}
                 </div>
                 {% endfor %}
-                <button class="btn btn-primary">Create</button>
+                <button class="btn btn-primary">Update</button>
             </div>
 
         </form>

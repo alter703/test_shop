@@ -2,30 +2,68 @@
     class="card card-compact w-95 bg-base-200 shadow-lg hover:bg-base-100 transition-all duration-200 hover:shadow-md m-1">
     <a href="{% url 'article:detail' post.id %}">
         <figure>
-            <img src="{% if not post.thumbnail %} 
-            https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019
-            {% else %}
-            {{ post.thumbnail.url }}            
-            {% endif %}" alt="Post Photo" class="w-full rounded-md" />
+            <img src="{{ post.get_post_thumbnail }}" alt="Post Photo" class="w-full rounded-md" />
         </figure>
 
         <div class="card-body">
             <h2 class="card-title">{{ post.title }}</h2>
-            <h2>Автор: {{ post.author }}</h2>
-            <h4>Коментарів: {{ post.comments.count }}</h4>
+            <div class="flex items-center mt-4">
+                <img src="{{post.author.profile.get_avatar}}" alt="avatar" class="w-8 rounded-full" />
+                <h2 class="text-lg ml-3">{{ post.author }}</h2>
+            </div>
     </a>
     <div class="card-actions justify-end">
-        <button
-            class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
-            id="dislike_{{post.id}}" onclick="dislike({{post.id}})"><i
-                class="fa-solid fa-thumbs-down {%if user in post.dislike.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
-            {{ post.dislike.count }}</button>
-        <button
-            class="btn {% if post.author_id != user.id %} btn-dark {% else %} btn-disabled {% endif %} text-white text-lg"
-            id="like_{{post.id}}" onclick="like({{post.id}})"><i
-                class="fa-solid fa-heart {%if user in post.like.all %}text-red-500{%else%}text-white{%endif%}"></i>
-            {{ post.like.count }}</button>
+        <div class="flex flex-row flex-wrap mx-2">
+            {% if user == post.author %}
+            <div class="dropdown">
+                <div tabindex="0" role="button" class="btn m-1">Options</div>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                    <li><a onclick="delete_post_{{post.id}}.showModal()" class="text-lg hover:bg-error">Delete</a></li>
+                </ul>
+            </div>
+            {% endif %}
+            <p class="text-lg mx-3 text-white"><i class="fa-solid fa-comment text-white mt-4 mx-1"></i>
+                {{ post.comments.count }}
+            </p>
+            {% if user == post.author %}
+            <p class="text-lg mx-3 text-white"><i class="fa-solid fa-thumbs-down text-white mt-4 mx-1"></i>
+                {{ post.dislike.count }}
+            <p class="text-lg mx-3 text-white"><i class="fa-solid fa-heart mt-4 text-white mx-1"></i>
+                {{ post.like.count }}</p>
+            </p>
+            {% else %}
+            <button class="btn btn-dark text-white text-lg mx-1" id="dislike_{{post.id}}"
+                onclick="dislike({{post.id}})"><i
+                    class="fa-solid fa-thumbs-down {%if user in post.dislike.all %}text-yellow-500{%else%}text-white{%endif%}"></i>
+                {{ post.dislike.count }}</button>
+            <button class="btn btn-dark text-white text-lg mx-1" id="like_{{post.id}}" onclick="like({{post.id}})"><i
+                    class="fa-solid fa-heart {%if user in post.like.all %}text-red-500{%else%}text-white{%endif%}"></i>
+                {{ post.like.count }}</button>
+            {% endif %}
+        </div>
+
     </div>
 </div>
 </a>
 </div>
+
+
+<dialog id="delete_post_{{post.id}}" class="modal">
+    <div class="modal-box w-11/12 max-w-5xl">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <h3 class="font-bold text-lg mb-4">Delete Post</h3>
+        <form action="{% url 'article:delete' post.id %}" method="post">
+            {% csrf_token %}
+            <div class="grid grid-cols-1 gap-6">
+                <div class="form-control">
+                    <label class="label">
+                        <span class="label-text">Are you sure you want to delete this post?</span>
+                    </label>
+                </div>
+                <button class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</dialog>

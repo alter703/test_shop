@@ -38,6 +38,20 @@ class Post(models.Model):
         return self.title
 
 
+    def get_post_image(self):
+        if self.image:
+            return self.image.url
+        else:
+            return 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019'
+
+
+    def get_post_thumbnail(self):
+        if self.thumbnail:
+            return self.thumbnail.url
+        else:
+            return 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/495px-No-Image-Placeholder.svg.png?20200912122019'
+
+
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')  # поле post відносится до Post моделі(related_name='comments') приклад: .prefetch_related('comments__post')
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comments')  # поле author відносится до User моделі(related_name='comments') приклад: .prefetch_related('comments__author')

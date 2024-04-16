@@ -1,8 +1,8 @@
 <div class="navbar bg-base-300">
     <div class="container mx-auto">
         <div class="navbar-start">
-            <a class="btn btn-ghost text-xl" href="{% url 'main:index' %}"><img src="/static/blog-svgrepo-com.svg"
-                    alt="logo" height="20px" width="30px">
+            <a class="btn btn-ghost text-xl no-animation" href="{% url 'main:index' %}"><img
+                    src="/static/blog-svgrepo-com.svg" alt="logo" height="20px" width="30px">
                 <h1>Lightning Blog</h1>
             </a>
         </div>
@@ -18,22 +18,21 @@
         <div class="navbar-end flex">
             {% if user.is_authenticated %}
             <div class="dropdown dropdown-end">
-                <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                <div tabindex="0" role="button" class="btn btn-ghost btn-circle no-animation avatar">
                     <div class="w-10 rounded-full">
-                        <img alt="Tailwind CSS Navbar component"
-                            src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                        <img alt="Avatar Thumbnail" src="{{ user.profile.get_avatar_thumbnail }}" />
                     </div>
                 </div>
                 <ul tabindex="0"
                     class="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-200 rounded-box w-52">
-                    <span class="p-2 text-sm text-primary"><b>I am <i>{{ user.username }}</i></b></span>
+                    <span class="p-2 text-sm text-primary"><b>I am <i>{{ user.profile.user }}</i></b></span>
                     <hr class="my-2 border-base-100">
                     <li>
-                        <a class="justify-between" href="{% url 'members:profile' %}">
-                            Profile
-                        </a>
+                        <a class="flex" href="{% url 'members:profile' user.profile.id %}"><i
+                                class="fa-solid fa-address-card"></i>Profile</a>
                     </li>
-                    <li><a href="{% url 'members:logout' %}">Logout</a></li>
+                    <li><a href="{% url 'members:logout' %}"><i class="fa-solid fa-right-from-bracket"></i>Logout</a>
+                    </li>
                 </ul>
             </div>
             {% else %}
